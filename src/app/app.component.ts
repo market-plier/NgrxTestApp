@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {Store} from '@ngrx/store';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'NgrxTestApp';
+  constructor(
+    private store: Store,
+    public route: ActivatedRoute) {
+
+  }
+
+
+  title = 'OrdersApp';
+  links = [
+    { title: 'Orders', fragment: 'orders' },
+    { title: 'Products', fragment: 'products' },
+    { title: 'Customers', fragment: 'customers' }
+  ];
 }

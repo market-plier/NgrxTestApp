@@ -1,16 +1,66 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
+import { StoreModule } from '@ngrx/store';
+import { counterReducer } from './counter.reducer';
+import { MyCounterComponent } from './my-counter/my-counter.component';
+import {environment} from '../environments/environment';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import {CreateCustomerComponent} from './Components/create-customer/create-customer.component';
+import {CreateProductComponent} from './Components/create-product/create-product.component';
+import {CustomerComponent} from './Components/customer/customer.component';
+import {ProductsComponent} from './Components/products/products.component';
+import {CreateOrderComponent} from './Components/create-order/create-order.component';
+import {HomePageComponent} from './Components/home-page/home-page.component';
+import {AppRoutingModule} from './app-routing.module';
+import {HttpClientModule} from '@angular/common/http';
+import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatRippleModule} from '@angular/material/core';
+import {MatSortModule} from '@angular/material/sort';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatCardModule} from '@angular/material/card';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import {FlexModule} from '@angular/flex-layout';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {productsReducer} from './state/products.reducer';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule
+  declarations: [AppComponent,
+    HomePageComponent,
+    CreateOrderComponent,
+    ProductsComponent,
+    CreateProductComponent,
+    CustomerComponent,
+    CreateCustomerComponent,
+    MyCounterComponent],
+  imports: [BrowserModule,
+    StoreModule.forRoot({count: counterReducer, productOrders: productsReducer}),
+    StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
+    HttpClientModule,
+    BrowserModule,
+    AppRoutingModule,
+    NoopAnimationsModule,
+    MatButtonModule,
+    FlexModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatRippleModule,
+    MatToolbarModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatIconModule,
+    NgbModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

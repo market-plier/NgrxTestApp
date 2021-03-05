@@ -1,0 +1,40 @@
+<div class="container" >
+  <div class="col-12">
+    <button class="create-btn float-right"
+            mat-icon-button
+            routerLink="create">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div class="mat-elevation-z8">
+    <table [dataSource]="datasource" class="mat-elevation-z8" mat-table>
+      <ng-container matColumnDef="id">
+        <th *matHeaderCellDef mat-header-cell> Order number</th>
+        <td *matCellDef="let order" mat-cell>
+          <div (click)="route(order.id)" [matRippleColor]="myColor" class="center" fxFlexFill
+               matRipple>
+            {{order.id}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="customerName">
+        <th *matHeaderCellDef mat-header-cell> Customer</th>
+        <td *matCellDef="let order" mat-cell> {{order.customer.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="customerAddress">
+        <th *matHeaderCellDef mat-header-cell> Customer address</th>
+        <td *matCellDef="let order" mat-cell> {{order.customer.address}} </td>
+      </ng-container>
+      <ng-container matColumnDef="totalCost">
+        <th *matHeaderCellDef mat-header-cell> Total cost</th>
+        <td *matCellDef="let order" mat-cell> {{order.customer.orderedCost}} </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell> Status</th>
+        <td *matCellDef="let order" mat-cell> {{order.status}} </td>
+      </ng-container>
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="p-3" fxFlex="60" fxFlexFill fxFlexOffset="20" fxLayout="column" fxLayoutAlign="center stretch">
+  <mat-card>
+    <form (ngSubmit)="add()" [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input formControlName="name" matInput name="name"
+        />
+      </mat-form-field>
+      <mat-error *ngIf="form.get('name').invalid && form.get('name').touched">
+        <small *ngIf="form.get('name').errors.required">Name is required</small>
+        <small *ngIf="form.get('name').errors.minlength">Name length must be more than 1</small>
+      </mat-error>
+      <mat-form-field>
+        <mat-label>Price</mat-label>
+        <input type="number" formControlName="price" matInput name="coefficient"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Quantity</mat-label>
+        <input type="number" formControlName="quantity" matInput name="coefficient"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Size</mat-label>
+        <mat-select formControlName="productSize">
+          <mat-option *ngFor="let stat of size" value="{{stat}}">
+            {{stat}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-error *ngIf="form.get('productSize').invalid && form.get('productSize').touched">
+        <small *ngIf="form.get('productSize').errors.required">Size is required</small>
+      </mat-error>
+      <mat-form-field appearance="fill">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="productCategory">
+          <mat-option *ngFor="let stat of category" value="{{stat}}">
+            {{stat}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-error *ngIf="form.get('productCategory').invalid && form.get('productCategory').touched">
+        <small *ngIf="form.get('productCategory').errors.required">Category is required</small>
+      </mat-error>
+      <button color="primary" mat-flat-button (click)="cancel()">Cancel</button>
+      <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
+    </form>
+  </mat-card>
+</div>
