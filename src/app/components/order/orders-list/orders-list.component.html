@@ -11,10 +11,10 @@
       <ng-container matColumnDef="id">
         <th *matHeaderCellDef mat-header-cell> Order number</th>
         <td *matCellDef="let order" mat-cell>
-          <div (click)="route(order.id)" [matRippleColor]="myColor" class="center" fxFlexFill
-               matRipple>
+          <a (click)="route(order.id)" class="center" fxFlexFill
+               >
             {{order.id}}
-          </div>
+          </a>
         </td>
       </ng-container>
       <ng-container matColumnDef="customerName">
@@ -27,7 +27,7 @@
       </ng-container>
       <ng-container matColumnDef="totalCost">
         <th *matHeaderCellDef mat-header-cell> Total cost</th>
-        <td *matCellDef="let order" mat-cell> {{order.customer.orderedCost}} </td>
+        <td *matCellDef="let order" mat-cell> {{order.orderedCost}} </td>
       </ng-container>
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef mat-header-cell> Status</th>

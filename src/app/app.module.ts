@@ -6,12 +6,12 @@ import { counterReducer } from './counter.reducer';
 import { MyCounterComponent } from './my-counter/my-counter.component';
 import {environment} from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import {CreateCustomerComponent} from './Components/create-customer/create-customer.component';
-import {CreateProductComponent} from './Components/create-product/create-product.component';
-import {CustomerComponent} from './Components/customer/customer.component';
-import {ProductsComponent} from './Components/products/products.component';
-import {CreateOrderComponent} from './Components/create-order/create-order.component';
-import {HomePageComponent} from './Components/home-page/home-page.component';
+import {CreateCustomerComponent} from './components/customer/create-customer/create-customer.component';
+import {CreateProductComponent} from './components/product/create-product/create-product.component';
+import {CustomerComponent} from './components/customer/customer-list/customer.component';
+import {ProductsComponent} from './components/product/products-list/products.component';
+import {CreateOrderComponent} from './components/order/create-order/create-order.component';
+import {OrdersListComponent} from './components/order/orders-list/orders-list.component';
 import {AppRoutingModule} from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MatInputModule} from '@angular/material/input';
@@ -29,14 +29,22 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {productsReducer} from './state/products.reducer';
+import {UpdateOrderComponent} from './components/order/update-order/update-order.component';
+import {UpdateProductComponent} from './components/product/update-product/update-product.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDialogModule} from '@angular/material/dialog';
+import {ConfirmationDialogComponent} from './components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [AppComponent,
-    HomePageComponent,
+    OrdersListComponent,
     CreateOrderComponent,
     ProductsComponent,
     CreateProductComponent,
     CustomerComponent,
+    UpdateOrderComponent,
+    UpdateProductComponent,
+    ConfirmationDialogComponent,
     CreateCustomerComponent,
     MyCounterComponent],
   imports: [BrowserModule,
@@ -50,6 +58,7 @@ import {productsReducer} from './state/products.reducer';
     FlexModule,
     MatInputModule,
     MatTableModule,
+    MatSnackBarModule,
     MatSortModule,
     MatPaginatorModule,
     MatRippleModule,
@@ -58,7 +67,7 @@ import {productsReducer} from './state/products.reducer';
     ReactiveFormsModule,
     MatSelectModule,
     MatIconModule,
-    NgbModule
+    NgbModule, MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],

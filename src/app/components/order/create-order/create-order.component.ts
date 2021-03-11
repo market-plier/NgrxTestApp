@@ -1,17 +1,16 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Customer} from '../../models/Customer';
-import {Product} from '../../models/Product';
+import {Customer} from '../../../models/customer';
+import {Product} from '../../../models/product';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
-import {OrderService} from '../../services/OrderService';
-import {CustomerServiceService} from '../../services/customer-service.service';
+import {OrderService} from '../../../services/order.service';
+import {CustomerServiceService} from '../../../services/customer.service';
 import {MatTableDataSource} from '@angular/material/table';
-import {ProductOrders} from '../../models/ProductOrders';
-import {ProductService} from '../../services/product.service';
-import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {addProduct} from '../../state/products.actions';
+import {ProductOrders} from '../../../models/product-orders';
+import {ProductService} from '../../../services/product.service';
+import {Store} from '@ngrx/store';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-order',
@@ -25,28 +24,26 @@ export class CreateOrderComponent implements OnInit {
   status: string[] = [
     'New', 'Paid', 'Shipped', 'Delivered', 'Closed'
   ];
-  productsFromStore: Observable<any>;
   selectedProducts: ProductOrders[] = [];
   myColor = 'white';
   datasource: MatTableDataSource<ProductOrders>;
   displayedColumns: string[] = ['name', 'productCategory', 'productSize', 'price', 'quantity'];
-
   @Output() addProduct: EventEmitter<any> = new EventEmitter();
-
+  totalCost = 0;
   constructor(
     private store: Store<{productOrders}>,
     private route: ActivatedRoute,
     private orderService: OrderService,
     private productService: ProductService,
     private customerService: CustomerServiceService,
-    private location: Location) {
+    private location: Location,
+    private snackBar: MatSnackBar) {
     this.initForm();
-    this.productsFromStore = this.store.pipe(select('productOrders'));
-    this.productsFromStore.subscribe(value => console.log(value));
   }
   ngOnInit(): void {
     this.getCustomers();
     this.getProducts();
+    this.selectedProducts.forEach(x => this.totalCost += x.quantity * x.product.price);
   }
   initForm(): void {
     this.form = new FormGroup({
@@ -83,14 +80,6 @@ export class CreateOrderComponent implements OnInit {
   cancel() {
     this.location.back();
   }
-  getProductsToState(){
-    const product = this.products.filter(product => product.id == this.form.get('product').value)[0];
-    const productOrder: ProductOrders = {
-      product,
-      quantity: this.form.get('quantity').value
-    };
-    this.store.dispatch(addProduct({productOrder}));
-  }
     addToSelectedProducts(){
     const product = this.products.filter(product => product.id == this.form.get('product').value)[0];
     console.log(product);
@@ -99,7 +88,7 @@ export class CreateOrderComponent implements OnInit {
         productId: this.form.get('product').value,
         quantity: this.form.get('quantity').value
       } as ProductOrders;
-    console.log(productOrders);
+    this.totalCost += productOrders.quantity * productOrders.product.price;
     this.selectedProducts.push(productOrders);
     this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
     }
@@ -115,6 +104,7 @@ export class CreateOrderComponent implements OnInit {
     };
     console.log(productOrders);
     this.orderService.addOrder(productOrders)
-      .subscribe(() => this.cancel());
+      .subscribe(() => this.cancel(),
+        error => this.snackBar.open(error.error, 'Ok', {duration: 4000}));
   }
 }

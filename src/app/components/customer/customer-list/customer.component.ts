@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
-import {Order} from '../../models/Order';
-import {Product} from '../../models/Product';
-import {ProductService} from '../../services/product.service';
+import {Order} from '../../../models/order';
 import {Router} from '@angular/router';
-import {Customer} from '../../models/Customer';
-import {CustomerServiceService} from '../../services/customer-service.service';
+import {Customer} from '../../../models/customer';
+import {CustomerServiceService} from '../../../services/customer.service';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-customer',
@@ -19,7 +19,8 @@ export class CustomerComponent implements OnInit {
   customers: Customer[];
   displayedColumns: string[] = ['name', 'address', 'ordersCount', 'orderedCost', 'column-delete'];
 
-  constructor(private customerService: CustomerServiceService,
+  constructor(private dialog: MatDialog,
+              private customerService: CustomerServiceService,
               private router: Router) { }
 
   ngOnInit(): void {
@@ -51,5 +52,21 @@ export class CustomerComponent implements OnInit {
         console.error('error caught in component');
         throw error;
       }));
+  }
+  openDialog(id: number) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Yes',
+          cancel: 'No'
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.delete(id);
+      }
+    });
   }
 }

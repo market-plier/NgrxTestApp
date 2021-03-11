@@ -28,13 +28,13 @@
       </ng-container>
       <ng-container matColumnDef="ordersCount">
         <th *matHeaderCellDef mat-header-cell> Orders Count</th>
-        <td *matCellDef="let customer" mat-cell> {{customer.ordersCount}} </td>
+        <td *matCellDef="let customer" mat-cell> {{customer.orderCount}} </td>
       </ng-container>
 
       <ng-container matColumnDef="column-delete">
         <th style="width:15%;" mat-header-cell *matHeaderCellDef>Action</th>
         <td  mat-cell *matCellDef="let customer">
-          <button mat-mini-fab color="primary" (click)="delete(customer.id)">
+          <button mat-mini-fab color="primary" (click)="openDialog(customer.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

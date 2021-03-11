@@ -1,21 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Customer} from '../../models/Customer';
-import {Product} from '../../models/Product';
 import {ActivatedRoute} from '@angular/router';
-import {OrderService} from '../../services/OrderService';
-import {CustomerServiceService} from '../../services/customer-service.service';
+import {OrderService} from '../../../services/order.service';
+import {CustomerServiceService} from '../../../services/customer.service';
 import {Location} from '@angular/common';
-import {ProductService} from '../../services/product.service';
+import {ProductService} from '../../../services/product.service';
 
 @Component({
   selector: 'app-create-product',
-  templateUrl: './create-product.component.html',
-  styleUrls: ['./create-product.component.css']
+  templateUrl: './update-product.component.html',
+  styleUrls: ['./update-product.component.css']
 })
-export class CreateProductComponent implements OnInit {
-
-
+export class UpdateProductComponent implements OnInit {
   form: FormGroup;
   size: string[] = [
     'Big', 'Medium', 'Small'
@@ -23,6 +19,7 @@ export class CreateProductComponent implements OnInit {
   category: string[] = [
     'Products', 'Drinks', 'Deserts'
   ];
+  id;
   constructor(private route: ActivatedRoute,
               private orderService: OrderService,
               private customerService: CustomerServiceService,
@@ -32,6 +29,8 @@ export class CreateProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.id = +this.route.snapshot.paramMap.get('id');
+    this.getProduct();
   }
   initForm(): void {
     this.form = new FormGroup({
@@ -51,12 +50,23 @@ export class CreateProductComponent implements OnInit {
   cancel() {
     this.location.back();
   }
+  getProduct(){
+    this.productService.getProduct(this.id).subscribe(value =>
+      {
+        this.form.controls.name.setValue(value.name);
+        this.form.controls.price.setValue(value.price);
+        this.form.controls.quantity.setValue(value.quantity);
+        this.form.controls.productSize.setValue(value.productSize);
+        this.form.controls.productCategory.setValue(value.productCategory);
 
-  add() {
+      }
+    );
+  }
+  update() {
     const product = {
       ...this.form.value,
     };
-    this.productService.addProduct(product)
+    this.productService.updateProduct(product, this.id)
       .subscribe(() => this.cancel());
   }
 }

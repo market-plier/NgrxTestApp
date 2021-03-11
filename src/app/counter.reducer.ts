@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { increment, decrement, reset } from './counter.actions';
-import {ProductOrders} from './models/ProductOrders';
-import {addProduct} from './state/products.actions';
+import {ProductOrders} from './models/product-orders';
 
 export const initialState = 0;
 export const initialStateProducts: ProductOrders[] = [];

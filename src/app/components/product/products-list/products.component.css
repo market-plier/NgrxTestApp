@@ -1,0 +1,11 @@
+table {
+  width: 100%;
+}
+center{
+  color: #007bff;
+}
+
+a:hover{
+  color: #00ccff;
+  cursor: pointer;
+}

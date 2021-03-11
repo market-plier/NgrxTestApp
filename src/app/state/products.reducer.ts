@@ -1,5 +1,5 @@
-import { createReducer, on, Action } from '@ngrx/store';
-import {ProductOrders} from '../models/ProductOrders';
+import { createReducer, on} from '@ngrx/store';
+import {ProductOrders} from '../models/product-orders';
 import {addProduct} from './products.actions';
 
 export const initialState: ReadonlyArray<ProductOrders> = [];

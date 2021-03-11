@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {OrderService} from '../../services/OrderService';
+import {OrderService} from '../../../services/order.service';
 import {Router} from '@angular/router';
 import {MatTableDataSource} from '@angular/material/table';
-import {Order} from '../../models/Order';
+import {Order} from '../../../models/order';
 
 @Component({
   selector: 'app-home-page',
-  templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  templateUrl: './orders-list.component.html',
+  styleUrls: ['./orders-list.component.css']
 })
-export class HomePageComponent implements OnInit {
+export class OrdersListComponent implements OnInit {
   myColor = 'white';
   datasource: MatTableDataSource<Order>;
   orders: Order[];
@@ -23,7 +23,7 @@ export class HomePageComponent implements OnInit {
   }
 
   route(id: number) {
-    this.router.navigate([`/order/${id}`]);
+    this.router.navigate([`/orders/${id}`]);
   }
   getOrders() {
     this.orderService.getOrders()

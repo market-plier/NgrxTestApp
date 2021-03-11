@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Observable, throwError} from 'rxjs';
-import {Order} from '../models/Order';
 import {catchError} from 'rxjs/operators';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Customer} from '../models/Customer';
-import {Product} from '../models/Product';
+import {Customer} from '../models/customer';
+import {Product} from '../models/product';
 
 @Injectable({
   providedIn: 'root'

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
-import {Order} from '../../models/Order';
-import {OrderService} from '../../services/OrderService';
+import {Order} from '../../../models/order';
 import {Router} from '@angular/router';
-import {ProductService} from '../../services/product.service';
-import {Product} from '../../models/Product';
+import {ProductService} from '../../../services/product.service';
+import {Product} from '../../../models/product';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-products',
@@ -18,7 +19,8 @@ export class ProductsComponent implements OnInit {
   products: Product[];
   displayedColumns: string[] = ['name', 'productCategory', 'productSize', 'price', 'quantity', 'column-delete'];
 
-  constructor(private productService: ProductService,
+  constructor(private dialog: MatDialog,
+              private productService: ProductService,
               private router: Router) { }
 
   ngOnInit(): void {
@@ -26,7 +28,7 @@ export class ProductsComponent implements OnInit {
   }
 
   route(id: number) {
-    this.router.navigate([`/order/${id}`]);
+    this.router.navigate([`/products/${id}`]);
   }
   getProducts() {
     this.productService.getProducts()
@@ -50,4 +52,21 @@ export class ProductsComponent implements OnInit {
       throw error;
     }));
   }
+  openDialog(id: number) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Yes',
+          cancel: 'No'
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+         this.delete(id);
+      }
+    });
+  }
+
 }

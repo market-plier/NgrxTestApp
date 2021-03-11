@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -9,7 +8,6 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class AppComponent {
   constructor(
-    private store: Store,
     public route: ActivatedRoute) {
 
   }

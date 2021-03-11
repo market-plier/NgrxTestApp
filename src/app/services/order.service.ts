@@ -1,20 +1,28 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable, of, throwError} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {Order} from '../models/Order';
+import {Order} from '../models/order';
+import {OrderToUpdate} from '../models/order-to-update';
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
+  get orderToUpdate(): Order {
+    return this._orderToUpdate;
+  }
+
+  set orderToUpdate(value: Order) {
+    this._orderToUpdate = value;
+  }
 
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
   private orderUrl = 'http://localhost:5000/api/order';
-
+  private _orderToUpdate: Order;
   constructor(private http: HttpClient) {
   }
 
@@ -29,7 +37,7 @@ export class OrderService {
         }));
   }
 
-  getOrder(id: number): Observable<Order> {
+  getOrder(id: number): Observable<OrderToUpdate> {
     const url = `${this.orderUrl}/${id}`;
     return this.http.get<Order>(url).pipe(
       catchError((err) => {
@@ -39,9 +47,9 @@ export class OrderService {
       }));
   }
 
-  addOrder(formData: any): Observable<Order> {
-    console.log(formData);
-    return this.http.post<Order>(this.orderUrl, formData, this.httpOptions).pipe(
+  addOrder(order: any): Observable<Order> {
+    console.log(order);
+    return this.http.post<Order>(this.orderUrl, order, this.httpOptions).pipe(
       catchError((err) => {
         console.log('error caught in service');
         console.error(err);
@@ -49,6 +57,14 @@ export class OrderService {
       })
     );
   }
-
-
+  updateOrder(order: any): Observable<Order> {
+    console.log(order);
+    return this.http.put<Order>(`${this.orderUrl}/${order.id}`, order, this.httpOptions).pipe(
+      catchError((err) => {
+        console.log('error caught in service');
+        console.error(err);
+        return throwError(err);    // Rethrow it back to component
+      })
+    );
+  }
 }

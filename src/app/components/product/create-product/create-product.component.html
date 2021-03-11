@@ -42,8 +42,10 @@
       <mat-error *ngIf="form.get('productCategory').invalid && form.get('productCategory').touched">
         <small *ngIf="form.get('productCategory').errors.required">Category is required</small>
       </mat-error>
-      <button color="primary" mat-flat-button (click)="cancel()">Cancel</button>
-      <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
+      <div class="mt-4" fxLayout="row" fxLayoutAlign="space-between center">
+        <button color="primary" mat-flat-button (click)="cancel()">Cancel</button>
+        <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
+      </div>
     </form>
   </mat-card>
 </div>

@@ -1,0 +1,104 @@
+<div class="p-3" fxFlex="60" fxFlexFill fxFlexOffset="20" fxLayout="column" fxLayoutAlign="center stretch">
+  <mat-card>
+    <form (ngSubmit)="update()" [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
+      <mat-form-field appearance="fill">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let stat of status" value="{{stat}}">
+            {{stat}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-error *ngIf="form.get('status').invalid && form.get('status').touched">
+        <small *ngIf="form.get('status').errors.required">Status is required</small>
+      </mat-error>
+      <mat-form-field appearance="fill">
+        <mat-label>Customer</mat-label>
+        <mat-select formControlName="customer">
+          <mat-option *ngFor="let stat of customers" value="{{stat.id}}">
+            {{stat.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-error *ngIf="form.get('customer').invalid && form.get('customer').touched">
+        <small *ngIf="form.get('customer').errors.required">Customer is required</small>
+      </mat-error>
+      <div fxFlex="grow" fxLayout="row" fxLayoutAlign="space-between start">
+        <div fxFlex="grow" fxLayout="row">
+          <mat-form-field>
+          <mat-label>Product</mat-label>
+          <mat-select formControlName="product">
+            <mat-option *ngFor="let stat of products" value="{{stat.id}}">
+              {{stat.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+          <mat-form-field fxFlexOffset="5">
+            <mat-label>Quantity</mat-label>
+            <input type="number" formControlName="quantity" matInput
+            />
+          </mat-form-field>
+        </div>
+        <button class="create-btn float-right"
+                type="button"
+                mat-icon-button
+                [disabled]="form.get('product').invalid || form.get('quantity').invalid"
+               (click)="addToSelectedProducts(form.controls.product.value,form.controls.quantity.value)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <mat-form-field class="example-full-width">
+        <mat-label>Leave a comment</mat-label>
+        <textarea matInput formControlName="comment"></textarea>
+      </mat-form-field>
+      <p class="text-start">
+        Selected products
+      </p>
+      <table [dataSource]="datasource" class="mat-elevation-z1" mat-table>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell> Name</th>
+          <td *matCellDef="let product" mat-cell>
+            {{product.product.name}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="productCategory">
+          <th *matHeaderCellDef mat-header-cell> Category</th>
+          <td *matCellDef="let product" mat-cell> {{product.product.productCategory}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productSize">
+          <th *matHeaderCellDef mat-header-cell> Size</th>
+          <td *matCellDef="let product" mat-cell> {{product.product.productSize}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th *matHeaderCellDef mat-header-cell> Price</th>
+          <td *matCellDef="let product" mat-cell> {{product.product.price}} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <th *matHeaderCellDef mat-header-cell> Quantity</th>
+          <td *matCellDef="let product" mat-cell> {{product.quantity}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="column-delete">
+          <th style="width:15%;" mat-header-cell *matHeaderCellDef>Action</th>
+          <td  mat-cell *matCellDef="let product">
+            <button mat-mini-fab color="primary" type="button" (click)="delete(product)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+      </table>
+      <p class="text-start mt-4">
+        Total cost: {{totalCost}}
+      </p>
+        <div class="mt-4" fxLayout="row" fxLayoutAlign="space-between center">
+        <button color="primary" mat-flat-button type="button" (click)="cancel()">Cancel</button>
+        <button [disabled]="!form.valid || selectedProducts.length == 0" color="primary" mat-flat-button type="submit">Submit</button>
+      </div>
+    </form>
+  </mat-card>
+</div>

@@ -1,5 +1,3 @@
-import {ProductOrders} from "./ProductOrders";
-
 export interface Product {
   id?: number;
   name?: string;
