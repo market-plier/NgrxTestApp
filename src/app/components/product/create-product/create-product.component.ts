@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {OrderService} from '../../../services/order.service';
 import {CustomerServiceService} from '../../../services/customer.service';
 import {Location} from '@angular/common';
@@ -21,16 +21,28 @@ export class CreateProductComponent implements OnInit {
   category: string[] = [
     'Products', 'Drinks', 'Deserts'
   ];
+  id: number;
+  productDate: Date = new Date();
   constructor(
+              private router: Router,
               private route: ActivatedRoute,
-              private orderService: OrderService,
-              private customerService: CustomerServiceService,
               private location: Location,
               private productService: ProductService) {
     this.initForm();
   }
-
+ integer(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const error: ValidationErrors = { integer: true };
+      if (control.value && control.value !== parseInt(control.value, 10)) {
+        control.setErrors(error);
+        return error;
+      }
+      control.setErrors(null);
+      return null;
+    };
+  }
   ngOnInit(): void {
+    this.getProductId();
   }
   initForm(): void {
     this.form = new FormGroup({
@@ -41,7 +53,8 @@ export class CreateProductComponent implements OnInit {
         Validators.maxLength(255)]),
       quantity: new FormControl('', [Validators.required,
         Validators.min(1),
-        Validators.max(100000000)]),
+        Validators.max(100000000),
+      this.integer()]),
       price: new FormControl('', [Validators.required,
         Validators.min(0.01),
         Validators.max(100000000)])
@@ -50,12 +63,14 @@ export class CreateProductComponent implements OnInit {
   cancel() {
     this.location.back();
   }
-
+  getProductId(){
+    this.productService.getLastProductId().subscribe(value => this.id = value + 1);
+  }
     add() {
     const product = {
       ...this.form.value,
     };
     this.productService.addProduct(product)
-      .subscribe(() => this.cancel());
-  }
+      .subscribe(() =>  this.router.navigateByUrl('/products'));
+    }
 }

@@ -12,6 +12,7 @@ import {ProductService} from '../../../services/product.service';
 import {Store} from '@ngrx/store';
 import {OrderToUpdate} from '../../../models/order-to-update';
 import {addProduct} from '../../../state/products.actions';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-order',
@@ -31,6 +32,10 @@ export class UpdateOrderComponent implements OnInit {
   displayedColumns: string[] = ['name', 'productCategory', 'productSize', 'price', 'quantity', 'column-delete'];
   orderToUpdate: OrderToUpdate;
   totalCost = 0;
+  addProductForm: FormGroup;
+  maxQuantity = 0;
+  orderId: any;
+  orderDate: Date = new Date();
 
   constructor(
     private store: Store<{productOrders}>,
@@ -38,7 +43,8 @@ export class UpdateOrderComponent implements OnInit {
     private orderService: OrderService,
     private productService: ProductService,
     private customerService: CustomerServiceService,
-    private location: Location) {
+    private location: Location,
+    private snackBar: MatSnackBar) {
     this.initForm();
   }
   ngOnInit(): void {
@@ -46,17 +52,25 @@ export class UpdateOrderComponent implements OnInit {
     this.getProducts();
     this.getOrderToUpdate();
     this.selectedProducts.forEach(x => this.totalCost += x.quantity * x.product.price);
-
   }
   initForm(): void {
     this.form = new FormGroup({
-      customer: new FormControl( '', [Validators.required]),
-      status: new FormControl( '', [Validators.required]),
-      product: new FormControl('', [Validators.required]),
-      quantity: new FormControl('', [Validators.required,
-      Validators.min(1)]),
+      customer: new FormControl('', Validators.required),
+      status: new FormControl('', Validators.required),
       comment: new FormControl('', Validators.required)
     });
+    this.addProductForm = new FormGroup({
+      product: new FormControl('', Validators.required),
+      quantity: new FormControl('', [Validators.required,
+        Validators.min(1)])
+    });
+    this.addProductForm.controls.product.valueChanges.subscribe(value =>
+    {
+      this.maxQuantity = this.products.filter(product => product.id == value)[0].quantity;
+      this.addProductForm.controls.quantity.setValidators([Validators.required,
+        Validators.min(1), Validators.max(this.maxQuantity)]);
+      this.addProductForm.controls.quantity.setValue(1);
+    } );
   }
   getOrder(id: number){
     this.orderService.getOrder(id).subscribe(value => {
@@ -65,6 +79,7 @@ export class UpdateOrderComponent implements OnInit {
       this.form.controls.status.setValue(value.status);
       this.form.controls.comment.setValue(value.comment);
       this.orderToUpdate = value;
+      this.orderDate = value.date;
       console.log(this.orderToUpdate);
       value.productsDto.forEach(x => this.addToSelectedProducts(x.productId, x.quantity));
       this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
@@ -72,9 +87,15 @@ export class UpdateOrderComponent implements OnInit {
   }
   getOrderToUpdate(){
     this.route.params.subscribe(params => {
-      this.getOrder(params.id);
+      this.orderId = params.id;
+      this.getOrder(this.orderId);
       }
     );
+
+  }
+  calculateTotalCost(){
+    this.totalCost = 0;
+    this.selectedProducts.forEach(product => this.totalCost += product.quantity * product.product.price);
 
   }
   getCustomers(){
@@ -112,14 +133,14 @@ export class UpdateOrderComponent implements OnInit {
   }
     addToSelectedProducts(id: number, quantity: number){
     const product = this.products.filter(product => product.id == id)[0];
-    console.log(product);
+    this.selectedProducts = this.selectedProducts.filter(product => product.productId != id);
     const productOrders: ProductOrders = {
         product,
         productId: id,
         quantity
       } as ProductOrders;
-    this.totalCost += productOrders.quantity * productOrders.product.price;
     this.selectedProducts.push(productOrders);
+    this.calculateTotalCost();
     this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
     }
 
@@ -135,13 +156,15 @@ export class UpdateOrderComponent implements OnInit {
     };
     console.log(productOrders);
     this.orderService.updateOrder(productOrders)
-      .subscribe(() => this.cancel());
+      .subscribe(() => this.cancel(),
+        error => this.snackBar.open(error.error, 'Ok', {duration: 4000}));
   }
 
   delete(product: ProductOrders) {
     this.selectedProducts = this.selectedProducts.filter(value => {
       return value !== product;
     });
+    this.calculateTotalCost();
     this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
   }
 }

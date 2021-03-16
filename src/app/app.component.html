@@ -1,9 +1,11 @@
-<nav class="container d-flex flex-row justify-content-start">
-    <ul ngbNav [activeId]="route.fragment | async">
+<div class="mt-4">
+  <nav fxFlexOffset="15" class="container d-flex flex-row justify-content-start">
+    <ul ngbNav [activeId]="activeId" class="nav-pills">
       <li [ngbNavItem]="link.fragment" *ngFor="let link of links">
         <a ngbNavLink routerLink="/{{link.fragment}}" >{{ link.title }}</a>
       </li>
     </ul>
 </nav>
+</div>
 <router-outlet></router-outlet>
-<app-my-counter></app-my-counter>
+<!--<app-my-counter></app-my-counter>-->

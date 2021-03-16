@@ -5,4 +5,5 @@ export interface Product {
   productSize?: string;
   quantity?: number;
   price?: number;
+  date?: Date;
 }

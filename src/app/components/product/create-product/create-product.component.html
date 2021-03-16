@@ -1,5 +1,9 @@
-<div class="p-3" fxFlex="60" fxFlexFill fxFlexOffset="20" fxLayout="column" fxLayoutAlign="center stretch">
-  <mat-card>
+<div class="p-3 mt-3 mb-3 mat-elevation-z8" fxFlex="70" fxFlexFill fxFlexOffset="15">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+    <p>Product Number: {{id}}</p>
+    <p>Product Date: {{productDate | date: 'shortDate'}}</p>
+    <div></div>
+  </div>
     <form (ngSubmit)="add()" [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
       <mat-form-field>
         <mat-label>Name</mat-label>
@@ -12,13 +16,28 @@
       </mat-error>
       <mat-form-field>
         <mat-label>Price</mat-label>
-        <input type="number" formControlName="price" matInput name="coefficient"
+        <input type="number" formControlName="price" matInput
         />
+        <mat-error *ngIf="form.get('price').invalid && form.get('price').touched">
+          <small *ngIf="form.get('price').errors.required">Price is required</small>
+        </mat-error>
+        <mat-error *ngIf="form.get('price').invalid">
+          <small *ngIf="form.get('price').errors.min">Selected price is too low</small>
+          <small *ngIf="form.get('price').errors.max">Selected price is higher than available quantity</small>
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
         <mat-label>Quantity</mat-label>
-        <input type="number" formControlName="quantity" matInput name="coefficient"
+        <input type="number" formControlName="quantity" matInput
         />
+        <mat-error *ngIf="form.get('quantity').invalid && form.get('quantity').touched">
+          <small *ngIf="form.get('quantity').errors.required">Quantity is required</small>
+        </mat-error>
+        <mat-error *ngIf="form.get('quantity').invalid">
+          <small *ngIf="form.get('quantity').errors.integer">Selected quantity is not an integer</small>
+          <small *ngIf="form.get('quantity').errors.min">Selected quantity is too low</small>
+          <small *ngIf="form.get('quantity').errors.max">Selected quantity is higher than available quantity</small>
+        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Size</mat-label>
@@ -43,9 +62,8 @@
         <small *ngIf="form.get('productCategory').errors.required">Category is required</small>
       </mat-error>
       <div class="mt-4" fxLayout="row" fxLayoutAlign="space-between center">
-        <button color="primary" mat-flat-button (click)="cancel()">Cancel</button>
+        <button color="primary" type="button" mat-flat-button routerLink="/products">Cancel</button>
         <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
       </div>
     </form>
-  </mat-card>
 </div>

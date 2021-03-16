@@ -1,26 +1,28 @@
-<div class="p-3" fxFlex="60" fxFlexFill fxFlexOffset="20" fxLayout="column" fxLayoutAlign="center stretch">
-  <mat-card>
+<div class="p-3 mt-3 mb-3 mat-elevation-z8" fxFlex="70" fxFlexFill fxFlexOffset="15">
     <form (ngSubmit)="add()" [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
       <mat-form-field>
         <mat-label>Name</mat-label>
         <input formControlName="name" matInput name="name"
         />
+        <mat-error *ngIf="form.get('name').invalid && form.get('name').touched">
+          <small *ngIf="form.get('name').errors.required">Name is required</small>
+          <small *ngIf="form.get('name').errors.minlength">Name length must be more than 1</small>
+        </mat-error>
       </mat-form-field>
-      <mat-error *ngIf="form.get('name').invalid && form.get('name').touched">
-        <small *ngIf="form.get('name').errors.required">Name is required</small>
-        <small *ngIf="form.get('name').errors.minlength">Name length must be more than 1</small>
-      </mat-error>
+
       <mat-form-field>
         <mat-label>Address</mat-label>
         <input formControlName="address" matInput name="address"
         />
+        <mat-error *ngIf="form.get('address').invalid && form.get('address').touched">
+          <small *ngIf="form.get('address').errors.required">Name is required</small>
+          <small *ngIf="form.get('address').errors.minlength">Name length must be more than 1</small>
+        </mat-error>
       </mat-form-field>
-      <mat-error *ngIf="form.get('address').invalid && form.get('address').touched">
-        <small *ngIf="form.get('address').errors.required">Name is required</small>
-        <small *ngIf="form.get('address').errors.minlength">Name length must be more than 1</small>
-      </mat-error>
-      <button color="primary" mat-flat-button (click)="cancel()">Cancel</button>
-      <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
+
+      <div class="mt-4" fxLayout="row" fxLayoutAlign="space-between center">
+        <button color="primary" type="button" mat-flat-button routerLink="/customers">Cancel</button>
+        <button [disabled]="!form.valid" color="primary" mat-flat-button type="submit">Submit</button>
+      </div>
     </form>
-  </mat-card>
 </div>

@@ -57,6 +57,14 @@ export class OrderService {
       })
     );
   }
+  getLastOrderId(): Observable<number>{
+    return this.http.get<number>(this.orderUrl + '/get-order-id').pipe(
+      catchError((err) => {
+        console.log('error caught in service');
+        console.error(err);
+        return throwError(err);
+      }));
+  }
   updateOrder(order: any): Observable<Order> {
     console.log(order);
     return this.http.put<Order>(`${this.orderUrl}/${order.id}`, order, this.httpOptions).pipe(

@@ -1,9 +1,10 @@
-<div class="container">
+<div class="p-3" fxFlex="70" fxFlexFill fxFlexOffset="15">
     <div class="col-12">
-      <button class="create-btn float-right"
-              mat-icon-button
+      <button class="float-right m-2"
+              mat-flat-button
+              color="primary"
               routerLink="create">
-        <mat-icon>add</mat-icon>
+        Add Product
       </button>
     </div>
   <div class="mat-elevation-z8">
@@ -29,7 +30,7 @@
 
       <ng-container matColumnDef="price">
         <th *matHeaderCellDef mat-header-cell> Price</th>
-        <td *matCellDef="let product" mat-cell> {{product.price}} </td>
+        <td *matCellDef="let product" mat-cell> {{product.price | currency}} </td>
       </ng-container>
       <ng-container matColumnDef="quantity">
         <th *matHeaderCellDef mat-header-cell> Quantity</th>

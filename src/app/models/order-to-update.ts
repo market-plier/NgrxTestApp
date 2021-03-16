@@ -6,4 +6,5 @@ export interface OrderToUpdate{
   status?: string;
   productsDto?: ProductOrders[];
   comment?: string;
+  date?: Date;
 }

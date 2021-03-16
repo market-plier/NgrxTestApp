@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {OrderService} from '../../../services/order.service';
 import {CustomerServiceService} from '../../../services/customer.service';
 import {Location} from '@angular/common';
@@ -20,16 +20,18 @@ export class UpdateProductComponent implements OnInit {
     'Products', 'Drinks', 'Deserts'
   ];
   id;
+  productDate: Date = new Date();
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private orderService: OrderService,
               private customerService: CustomerServiceService,
-              private location: Location,
               private productService: ProductService) {
     this.initForm();
   }
 
   ngOnInit(): void {
     this.id = +this.route.snapshot.paramMap.get('id');
+    console.log(this.id);
     this.getProduct();
   }
   initForm(): void {
@@ -41,15 +43,25 @@ export class UpdateProductComponent implements OnInit {
         Validators.maxLength(255)]),
       quantity: new FormControl('', [Validators.required,
         Validators.min(1),
-        Validators.max(100000000)]),
+        Validators.max(100000000),
+      this.integer()]),
       price: new FormControl('', [Validators.required,
         Validators.min(0.01),
         Validators.max(100000000)])
     });
   }
-  cancel() {
-    this.location.back();
+  integer(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const error: ValidationErrors = { integer: true };
+      if (control.value && control.value !== parseInt(control.value, 10)) {
+        control.setErrors(error);
+        return error;
+      }
+      control.setErrors(null);
+      return null;
+    };
   }
+
   getProduct(){
     this.productService.getProduct(this.id).subscribe(value =>
       {
@@ -58,7 +70,7 @@ export class UpdateProductComponent implements OnInit {
         this.form.controls.quantity.setValue(value.quantity);
         this.form.controls.productSize.setValue(value.productSize);
         this.form.controls.productCategory.setValue(value.productCategory);
-
+        this.productDate = value.date;
       }
     );
   }
@@ -67,6 +79,6 @@ export class UpdateProductComponent implements OnInit {
       ...this.form.value,
     };
     this.productService.updateProduct(product, this.id)
-      .subscribe(() => this.cancel());
+      .subscribe(() =>  this.router.navigateByUrl('/products'));
   }
 }

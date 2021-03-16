@@ -28,8 +28,11 @@ export class CreateOrderComponent implements OnInit {
   myColor = 'white';
   datasource: MatTableDataSource<ProductOrders>;
   displayedColumns: string[] = ['name', 'productCategory', 'productSize', 'price', 'quantity'];
-  @Output() addProduct: EventEmitter<any> = new EventEmitter();
   totalCost = 0;
+  maxQuantity = 0;
+  addProductForm: FormGroup;
+  orderId: any;
+  date = new Date();
   constructor(
     private store: Store<{productOrders}>,
     private route: ActivatedRoute,
@@ -43,17 +46,27 @@ export class CreateOrderComponent implements OnInit {
   ngOnInit(): void {
     this.getCustomers();
     this.getProducts();
+    this.getOrderId();
     this.selectedProducts.forEach(x => this.totalCost += x.quantity * x.product.price);
   }
   initForm(): void {
     this.form = new FormGroup({
       customer: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
-      product: new FormControl('', Validators.required),
-      quantity: new FormControl('', [Validators.required,
-      Validators.min(1)]),
       comment: new FormControl('', Validators.required)
     });
+    this.addProductForm = new FormGroup({
+      product: new FormControl('', Validators.required),
+      quantity: new FormControl('', [Validators.required,
+        Validators.min(1)])
+    });
+    this.addProductForm.controls.product.valueChanges.subscribe(value =>
+    {
+      this.maxQuantity = this.products.filter(product => product.id == value)[0].quantity;
+      this.addProductForm.controls.quantity.setValidators([Validators.required,
+      Validators.min(1), Validators.max(this.maxQuantity)]);
+      this.addProductForm.controls.quantity.setValue(1);
+    } );
   }
   getCustomers(){
     this.customerService.getCustomers()
@@ -80,19 +93,33 @@ export class CreateOrderComponent implements OnInit {
   cancel() {
     this.location.back();
   }
+  getOrderId(){
+    this.orderService.getLastOrderId().subscribe(value => this.orderId = value + 1);
+  }
     addToSelectedProducts(){
-    const product = this.products.filter(product => product.id == this.form.get('product').value)[0];
-    console.log(product);
+    const product = this.products.filter(product => product.id == this.addProductForm.get('product').value)[0];
+    this.selectedProducts = this.selectedProducts.filter(product => product.productId != this.addProductForm.get('product').value);
     const productOrders: ProductOrders = {
         product,
-        productId: this.form.get('product').value,
-        quantity: this.form.get('quantity').value
+        productId: this.addProductForm.get('product').value,
+        quantity: this.addProductForm.get('quantity').value
       } as ProductOrders;
-    this.totalCost += productOrders.quantity * productOrders.product.price;
     this.selectedProducts.push(productOrders);
+    this.calculateTotalCost();
     this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
     }
+  calculateTotalCost(){
+    this.totalCost = 0;
+    this.selectedProducts.forEach(product => this.totalCost += product.quantity * product.product.price);
 
+  }
+  delete(product: ProductOrders) {
+    this.selectedProducts = this.selectedProducts.filter(value => {
+      return value !== product;
+    });
+    this.calculateTotalCost();
+    this.datasource = new MatTableDataSource<ProductOrders>(this.selectedProducts);
+  }
   add() {
     const orders: { productId: number, quantity: number }[] = [];
     this.selectedProducts.forEach(value => orders.push({productId: value.product.id, quantity: value.quantity}) );

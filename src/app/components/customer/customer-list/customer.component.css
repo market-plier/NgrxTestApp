@@ -1,3 +1,8 @@
 table {
   width: 100%;
 }
+button.small {
+  margin-right: 1vw;
+  font-size: 9px;
+  line-height: 18px;
+}

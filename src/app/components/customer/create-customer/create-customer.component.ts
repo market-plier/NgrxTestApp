@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CustomerServiceService} from '../../../services/customer.service';
 import {Location} from '@angular/common';
 
@@ -14,9 +14,12 @@ export class CreateCustomerComponent implements OnInit {
   form: FormGroup;
 
 
-  constructor(private route: ActivatedRoute,
-              private location: Location,
-              private customerService: CustomerServiceService) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
+    private customerService: CustomerServiceService)
+   {
     this.initForm();
   }
 
@@ -41,6 +44,7 @@ export class CreateCustomerComponent implements OnInit {
       ...this.form.value,
     };
     this.customerService.addCustomer(customer)
-      .subscribe(() => this.cancel());
+      .subscribe(() =>  this.router.navigateByUrl('/customers'));
+
   }
 }

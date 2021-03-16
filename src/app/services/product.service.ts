@@ -47,6 +47,14 @@ export class ProductService {
       })
     );
   }
+  getLastProductId(): Observable<number>{
+    return this.http.get<number>(this.orderUrl + '/get-product-id').pipe(
+      catchError((err) => {
+        console.log('error caught in service');
+        console.error(err);
+        return throwError(err);
+      }));
+  }
   updateProduct(product: Product, id: number): Observable<Product> {
     console.log(product);
     return this.http.put<Product>(this.orderUrl + '/' + id, product, this.httpOptions).pipe(
